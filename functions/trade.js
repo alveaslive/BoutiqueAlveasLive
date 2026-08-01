@@ -22,7 +22,7 @@ export async function onRequest(context) {
 
   // construire l'action à déposer (on injecte toujours le login vérifié, jamais celui du body)
   const action = { type, user: login, at: Date.now() };
-  if (type === "publish") { action.giveUid = String(body.giveUid || ""); action.wantNom = String(body.wantNom || ""); }
+  if (type === "publish") { action.giveUid = String(body.giveUid || ""); action.wantNom = String(body.wantNom || ""); action.toName = String(body.toName || ""); }
   if (type === "accept")  { action.offerId = String(body.offerId || ""); action.myUid = String(body.myUid || ""); }
   if (type === "cancel")  { action.offerId = String(body.offerId || ""); }
 
