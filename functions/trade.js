@@ -12,7 +12,7 @@ export async function onRequest(context) {
   try { body = await request.json(); } catch { return json({ ok: false, error: "Requête invalide" }, 400); }
 
   const type = String(body.type || "");
-  if (!["publish", "accept", "cancel"].includes(type)) {
+  if (!["publish", "accept", "cancel", "decline"].includes(type)) {
     return json({ ok: false, error: "Action inconnue" }, 400);
   }
 
@@ -25,6 +25,7 @@ export async function onRequest(context) {
   if (type === "publish") { action.giveUid = String(body.giveUid || ""); action.wantNom = String(body.wantNom || ""); action.toName = String(body.toName || ""); }
   if (type === "accept")  { action.offerId = String(body.offerId || ""); action.myUid = String(body.myUid || ""); }
   if (type === "cancel")  { action.offerId = String(body.offerId || ""); }
+  if (type === "decline") { action.offerId = String(body.offerId || ""); action.mod = body.mod ? 1 : 0; }
 
   const actId = "act_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
   const actPath = `${dbUrl}/pokebot_trades/${channel}/actions/${actId}.json`;
