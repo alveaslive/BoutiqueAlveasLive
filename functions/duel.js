@@ -12,7 +12,7 @@ export async function onRequest(context) {
   try { body = await request.json(); } catch { return json({ ok: false, error: "Requête invalide" }, 400); }
 
   const type = String(body.type || "");
-  if (!["challenge", "accept", "cancel", "active"].includes(type)) return json({ ok: false, error: "Action inconnue" }, 400);
+  if (!["challenge", "accept", "cancel", "active", "decline"].includes(type)) return json({ ok: false, error: "Action inconnue" }, 400);
 
   const dbUrl = env.FIREBASE_DB_URL;
   const channel = env.CHANNEL || "alveaslive";
@@ -23,6 +23,7 @@ export async function onRequest(context) {
   if (type === "challenge") { action.toName = String(body.toName || ""); }
   if (type === "accept")    { action.challengeId = String(body.challengeId || ""); }
   if (type === "cancel")    { action.challengeId = String(body.challengeId || ""); action.mod = body.mod ? 1 : 0; }
+  if (type === "decline")   { action.challengeId = String(body.challengeId || ""); action.mod = body.mod ? 1 : 0; }
   if (type === "active")    { action.uid = String(body.uid || ""); }
 
   const actId = "act_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
