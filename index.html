@@ -1475,7 +1475,7 @@ async function launchDuel(){
       body: JSON.stringify({ type:"challenge", toName }) });
     const data = await r.json();
     if(data.ok){ duelSay("✅ "+(data.message||"Défi lancé !")); duelToName=""; }
-    else duelSay("❌ "+(data.error||"Échec."));
+    else duelSay("❌ "+(data.error||data.message||"Échec."));
   }catch(e){ duelSay("❌ Erreur réseau — réessaie."); }
 }
 
