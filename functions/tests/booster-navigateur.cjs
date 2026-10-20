@@ -1,0 +1,33 @@
+/* Test visuel des boosters : node tests/booster-navigateur.cjs <dossier-captures> */
+const { chromium } = require('playwright');
+const { spawn } = require('child_process');
+const OUT = process.argv[2] || '.', U = 'http://localhost:8788', UDB = 'http://localhost:8789';
+const base = (methode, chemin, v) => fetch(`${UDB}/db/chauvalerie/${chemin}.json?auth=dev`, { method: methode, body: JSON.stringify(v) });
+(async () => {
+  const srv = spawn('node', ['dev/serveur.mjs'], { env: { ...process.env, SAUVE: 'non' }, stdio: 'ignore' });
+  await new Promise(r => setTimeout(r, 1200));
+  const b = await chromium.launch(), errs = [];
+  const p = await (await b.newContext({ viewport: { width: 1360, height: 950 } })).newPage(); p.setDefaultTimeout(8000);
+  p.on('pageerror', e => errs.push(e.message));
+  const shot = n => p.screenshot({ path: `${OUT}/${n}.png` });
+  await p.goto(`${U}/api/dev-login?login=alveas`); await p.waitForTimeout(600);
+  await p.evaluate(() => fetch('/api/admin-init', { method: 'POST' }));
+  for (const [id, rarete] of [['cranisse', 'rare'], ['massacrane', 'epique'], ['bladwall', 'legendaire']]) await base('PATCH', `public/catalogue/chauves/${id}`, { rarete });
+  await p.goto(`${U}/#salon`); await p.waitForTimeout(900); await shot('b1-salon');
+  await p.click('.booster .btn[data-contenu]'); await p.waitForTimeout(500); await shot('b2-contenu'); await p.keyboard.press('Escape');
+  await p.click('[data-pack="saison-1"]');
+  await p.waitForTimeout(600); await shot('b3-arrive');
+  await p.waitForTimeout(900); await shot('b4-tremble');
+  await p.waitForTimeout(650); await shot('b5-craque');
+  await p.waitForTimeout(1250); await shot('b6-cartes');
+  await p.waitForTimeout(1500); await shot('b7-tonte');
+  await p.waitForTimeout(4500); await shot('b8-fin'); await p.click('#tFin');
+  await p.goto(`${U}/#atelier`); await p.waitForTimeout(600); await shot('b9-atelier');
+  await p.click('[data-bo-cartes]'); await p.waitForTimeout(500); await shot('b10-cartes-booster'); await p.keyboard.press('Escape');
+  await p.click('#nouveauBooster'); await p.waitForTimeout(300);
+  await p.setInputFiles('#bImg', 'public/img/booster-saison-1.webp'); await p.fill('#bNom', 'Saison 2'); await p.waitForTimeout(600); await shot('b11-nouveau');
+  await p.click('#fBooster button[type=submit]'); await p.waitForTimeout(1200); await shot('b12-apres-creation');
+  await p.setViewportSize({ width: 390, height: 844 }); await p.goto(`${U}/#salon`); await p.waitForTimeout(700); await shot('b13-mobile');
+  await p.click('[data-pack="saison-1"]'); await p.waitForTimeout(2300); await shot('b14-mobile-craque');
+  console.log('erreurs', errs); await b.close(); srv.kill();
+})();

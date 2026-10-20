@@ -1,0 +1,162 @@
+/* =========================================================
+   La carte de chauve — style « Épuré »
+   Illustration plein cadre, bord métallique à la couleur de la
+   rareté, filet lumineux, nom en bas à gauche.
+   L'Unique est en pleine illustration, liseré arc-en-ciel.
+   Toutes les tailles sont en cqw : la carte se met à l'échelle
+   de son conteneur, du mini (60 px) à l'overlay (300 px).
+   ========================================================= */
+@property --tc-a{syntax:'<angle>';inherits:false;initial-value:0deg}
+@property --tc-lueur{syntax:'<number>';inherits:true;initial-value:0}
+.tc{--c:#c3c9d6;--c2:#5a6070;--tc-lueur:0;--rx:0deg;--ry:0deg;--mx:50%;--my:50%;--g:0;
+  position:relative;display:block;width:100%;aspect-ratio:63/88;container-type:inline-size;perspective:900px;text-align:left;
+  font-family:"Albert Sans","Segoe UI",system-ui,sans-serif;color:#f4eef8;
+  filter:drop-shadow(0 0 calc(var(--tc-lueur)*1px) color-mix(in srgb,var(--c) 80%,transparent)) drop-shadow(0 6cqw 5cqw rgba(0,0,0,.55))}
+.tc .f{position:absolute;inset:0;display:block;border-radius:5cqw;padding:2.6cqw;
+  background:linear-gradient(145deg,#fff,var(--c) 18%,var(--c2) 45%,var(--c) 70%,#fff);
+  box-shadow:inset 0 0 0 .4cqw rgba(0,0,0,.45),inset 0 0 0 .7cqw rgba(255,255,255,.3);
+  transform:rotateX(var(--rx)) rotateY(var(--ry));transition:transform .15s ease-out}
+.tc .b{position:relative;display:block;height:100%;border-radius:2.8cqw;overflow:hidden;background:#0e0915;box-shadow:0 0 0 .4cqw rgba(0,0,0,.6)}
+.tc .b::before{content:"";position:absolute;inset:2.2cqw;z-index:3;pointer-events:none;border:.45cqw solid var(--c);border-radius:1.6cqw;
+  box-shadow:0 0 2.5cqw color-mix(in srgb,var(--c) 60%,transparent),inset 0 0 2.5cqw color-mix(in srgb,var(--c) 30%,transparent)}
+.tc .art{position:absolute;inset:0;display:block}
+.tc .art img{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:50% 28%}
+.tc .art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,8,18,.35),transparent 14%,transparent 62%,rgba(12,8,18,.96) 94%)}
+.tc .rar{position:absolute;z-index:3;top:5.6cqw;left:6cqw;padding:.3cqw 2.8cqw;border-radius:99px;font-size:3.3cqw;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#12091a;background:var(--c)}
+.tc .chr{position:absolute;z-index:3;top:5.6cqw;right:6cqw;padding:.3cqw 2.4cqw;border-radius:99px;font-size:3.2cqw;font-weight:800;color:#06222e;background:linear-gradient(90deg,#e8fbff,#8fe3ff,#e8fbff)}
+.tc .plq{position:absolute;z-index:2;left:6.5cqw;right:6.5cqw;bottom:13cqw;display:block}
+.tc .nom{display:block;white-space:nowrap;font-family:"Tilt Neon","Trebuchet MS",system-ui,sans-serif;font-size:calc(10.4cqw * var(--n,1));line-height:1.05;color:#fff;overflow:hidden;text-overflow:ellipsis;
+  text-shadow:0 0 .5em color-mix(in srgb,var(--c) 85%,transparent),0 2px 3px #000}
+.tc .plq::after{content:"";display:block;width:26%;height:.8cqw;margin-top:1.6cqw;background:var(--c)}
+.tc .pied{position:absolute;z-index:2;left:6.5cqw;right:6.5cqw;bottom:4.6cqw;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2cqw;font-size:3.5cqw;color:#cdbfdc}
+.tc .col{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc .no{font:600 3.4cqw "Martian Mono",ui-monospace,Menlo,monospace;color:var(--c)}
+.tc .gem{display:none;width:7.4cqw;height:7.4cqw;transform:rotate(45deg);box-shadow:0 0 0 1.5px #0e0915,0 0 12px #ff7ab5}
+.tc .fx,.tc .glare{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen}
+.tc .fx{z-index:3;opacity:0}
+.tc .glare{z-index:4;opacity:var(--g);transition:opacity .2s;background:radial-gradient(60% 45% at var(--mx) var(--my),rgba(255,255,255,.5),transparent 70%)}
+
+/* ---------- raretés ---------- */
+.tc.rare{--c:#55c8ff;--c2:#0f4c8f;--tc-lueur:10}
+.tc.epique{--c:#cd86ff;--c2:#4a1790;--tc-lueur:16}
+.tc.epique .fx{opacity:.55;background:linear-gradient(115deg,transparent 36%,rgba(225,180,255,.55) 50%,transparent 64%) 0 0/260% 100%;animation:tc-balai 5s linear infinite}
+.tc.legendaire{--c:#ffc85a;--c2:#a3520a;--tc-lueur:22;animation:tc-respire 2.8s ease-in-out infinite}
+.tc.legendaire .f{background:linear-gradient(115deg,#fff3cc,#ffb02e 20%,#8f4206 40%,#ffd772 55%,#fff8e0 62%,#c66a0c 78%,#ffc85a) 0 0/300% 100%;animation:tc-or 4s linear infinite}
+.tc.legendaire .fx{opacity:.8;animation:tc-etincelles 3.6s linear infinite;
+  background:radial-gradient(circle,#fff 0 1px,transparent 2px) 0 0/34px 42px,radial-gradient(circle,#ffe2a0 0 1.2px,transparent 2.4px) 17px 21px/48px 56px,linear-gradient(115deg,transparent 38%,rgba(255,215,140,.5) 50%,transparent 62%) 0 0/260% 100%}
+.tc.legendaire .nom{background:linear-gradient(180deg,#fff,#ffe9b0 45%,#ffb02e);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 6px rgba(255,176,46,.8)) drop-shadow(0 2px 2px #000)}
+
+/* ---------- Crâne d'or : pleine illustration, cadre d'or massif qui tourne ---------- */
+.tc.or{--c:#ffd447;--c2:#7a5200;--tc-lueur:30;animation:tc-respire 3s ease-in-out infinite}
+.tc.or .f{padding:2cqw;box-shadow:inset 0 0 0 .4cqw rgba(0,0,0,.4);background:conic-gradient(from var(--tc-a),#fff6c9,#ffcf3f,#a86e00,#ffe58a,#fff,#c98a00,#ffd447,#fff6c9);animation:tc-tourne 3.5s linear infinite}
+.tc.or .b{border-radius:3.4cqw}
+.tc.or .b::before{border-color:#ffe58a;box-shadow:0 0 3cqw rgba(255,207,63,.8),inset 0 0 3cqw rgba(255,207,63,.35)}
+.tc.or .art img{object-position:50% 30%}
+.tc.or .rar{left:50%;translate:-50% 0;padding:.5cqw 3.4cqw;font-size:3.6cqw;letter-spacing:.2em;color:#3a2600;background:linear-gradient(180deg,#fff6c9,#ffcf3f 55%,#c98a00);box-shadow:0 0 3cqw rgba(255,207,63,.9)}
+.tc.or .plq{left:6cqw;right:6cqw;bottom:16cqw;text-align:center}
+.tc.or .plq::after{width:62%;height:.6cqw;margin:1.6cqw auto 0;background:linear-gradient(90deg,transparent,#ffd447,transparent)}
+.tc.or .nom{font-size:calc(12cqw * var(--n,1));background:linear-gradient(180deg,#fffbe6,#ffd447 50%,#b07800);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 8px rgba(255,200,40,.9)) drop-shadow(0 2px 2px #000)}
+.tc.or .pied{color:#ffe58a}
+.tc.or .fx{opacity:.9;animation:tc-etincelles 3s linear infinite;
+  background:radial-gradient(circle,#fff 0 1px,transparent 2px) 0 0/30px 38px,radial-gradient(circle,#ffe58a 0 1.3px,transparent 2.6px) 15px 19px/44px 52px,linear-gradient(115deg,transparent 36%,rgba(255,230,150,.55) 50%,transparent 64%) 0 0/260% 100%}
+
+/* ---------- Unique : pleine illustration ---------- */
+.tc.unique{--c:#ff9bd2;--c2:#7a2bd0;--tc-lueur:26}
+.tc.unique .f{padding:1.6cqw;box-shadow:none;background:conic-gradient(from var(--tc-a),#ff4f8b,#ffb347,#fff38a,#6dffb0,#3fc1ff,#b64dff,#ff4f8b);animation:tc-tourne 4s linear infinite}
+.tc.unique .b{border-radius:3.6cqw}
+.tc.unique .b::before{display:none}
+.tc.unique .art img{object-position:50% 30%}
+.tc.unique .rar{left:auto;right:6cqw;padding:0;font-size:3.8cqw;background:linear-gradient(90deg,#ffb347,#ff4f8b,#b64dff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 1px 2px #000)}
+.tc.unique .chr{top:11.5cqw}
+.tc.unique .plq{left:6cqw;right:6cqw;bottom:17cqw;text-align:center}
+.tc.unique .plq::after{width:62%;height:2px;margin:1.6cqw auto 0;background:linear-gradient(90deg,transparent,#ff7ab5,transparent)}
+.tc.unique .nom{font-size:calc(12cqw * var(--n,1));background:linear-gradient(90deg,#ffb347,#ff7ab5 50%,#c995ff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 8px rgba(255,79,139,.8)) drop-shadow(0 2px 2px #000)}
+.tc.unique .pied{left:5cqw;right:5cqw;bottom:3.4cqw;height:10cqw;grid-template-columns:1fr auto 1fr;color:#fff}
+.tc.unique .gem{display:block;background:conic-gradient(#ff4f8b,#ffb347,#fff38a,#6dffb0,#3fc1ff,#b64dff,#ff4f8b)}
+.tc.unique .no{justify-self:end;color:#fff38a}
+.tc.unique .fx{opacity:.45;animation:tc-holo 7s linear infinite;
+  background:repeating-linear-gradient(115deg,rgba(255,79,139,.5) 0,rgba(255,227,120,.4) 8%,rgba(80,255,190,.4) 16%,rgba(63,193,255,.45) 24%,rgba(182,77,255,.5) 32%,rgba(255,79,139,.5) 40%) 0 0/300% 100%}
+
+/* ---------- Chromé : feuille holographique, paillettes et liseré de chrome ----------
+   S'ajoute par-dessus n'importe quelle rareté. Le reflet suit la souris (--mx, --my). */
+.tc.chrome{--tc-lueur:26;filter:drop-shadow(0 0 calc(var(--tc-lueur)*.6px) #bff3ff) drop-shadow(0 0 calc(var(--tc-lueur)*1px) color-mix(in srgb,var(--c) 80%,transparent)) drop-shadow(0 6cqw 5cqw rgba(0,0,0,.55))}
+/* liseré de chrome liquide qui tourne autour de la carte */
+.tc.chrome .f::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.3cqw;pointer-events:none;
+  background:conic-gradient(from var(--tc-a),#fff,#7fdcff,#f6f9ff,#ff9bd2,#fff,#b9a4ff,#e8fbff,#fff38a,#fff);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+  animation:tc-tourne 3s linear infinite}
+/* feuille arc-en-ciel sur toute l'illustration */
+.tc.chrome .art::before{content:"";position:absolute;inset:0;z-index:1;mix-blend-mode:overlay;opacity:.6;
+  background:repeating-linear-gradient(112deg,#ff3d7f 0%,#ffb347 7%,#fff38a 14%,#5dffb0 21%,#3fc1ff 28%,#b64dff 35%,#ff3d7f 42%) calc(var(--mx)*1.6) calc(var(--my)*1.6)/320% 320%;
+  animation:tc-prisme 5s linear infinite}
+/* paillettes qui scintillent + grand reflet blanc qui balaie */
+.tc.chrome .b::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;mix-blend-mode:screen;
+  background:
+    linear-gradient(115deg,transparent 38%,rgba(255,255,255,.42) 48%,rgba(190,240,255,.28) 52%,transparent 61%) 0 0/260% 100%,
+    radial-gradient(circle,#fff 0 .55cqw,transparent 1.1cqw) 0 0/17cqw 21cqw,
+    radial-gradient(circle,#dff7ff 0 .4cqw,transparent .9cqw) 8cqw 11cqw/23cqw 19cqw,
+    radial-gradient(circle,#fff 0 .3cqw,transparent .7cqw) 4cqw 5cqw/11cqw 13cqw;
+  animation:tc-balai 2.6s linear infinite,tc-scintille 1.3s steps(3) infinite}
+.tc.chrome .b::before{border-color:#f2fbff;box-shadow:0 0 3cqw #bff3ff,inset 0 0 3cqw rgba(190,240,255,.5)}
+.tc.chrome .nom{background:linear-gradient(100deg,#fff 0%,#9fe6ff 22%,#fff 40%,#ffb6dd 58%,#fff 76%,#c6b6ff 100%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;
+  filter:drop-shadow(0 0 5px rgba(160,230,255,.9)) drop-shadow(0 2px 2px #000);animation:tc-or 3s linear infinite}
+.tc .chr{box-shadow:0 0 2.5cqw #8fe3ff;background:linear-gradient(90deg,#fff,#8fe3ff,#ffc1e3,#fff) 0 0/250% 100%;animation:tc-or 2.5s linear infinite}
+@keyframes tc-prisme{to{background-position:calc(var(--mx)*1.6 + 320%) calc(var(--my)*1.6 + 160%)}}
+@keyframes tc-scintille{0%{opacity:1}33%{opacity:.72}66%{opacity:.9}}
+.tc.inconnu .art img{filter:brightness(.16) saturate(0)}
+.tc.inconnu .nom{color:#76688a;text-shadow:none;background:none;filter:none}
+.tc.inconnu .fx{display:none}
+
+@keyframes tc-balai{from{background-position:130% 0}to{background-position:-130% 0}}
+@keyframes tc-or{to{background-position:-300% 0}}
+@keyframes tc-respire{50%{--tc-lueur:34}}
+@keyframes tc-etincelles{from{background-position:0 0,17px 21px,130% 0}to{background-position:0 -84px,17px -91px,-130% 0}}
+@keyframes tc-tourne{to{--tc-a:360deg}}
+@keyframes tc-holo{to{background-position:300% 0}}
+@media (prefers-reduced-motion:reduce){.tc,.tc *{animation:none!important}}
+
+/* ---------- état PCA : usure ou éclat selon la note (5 et 6 = état normal) ---------- */
+.tc .usure{position:absolute;inset:0;z-index:5;pointer-events:none;border-radius:5cqw}
+/* 10 et 9 : un reflet de vernis passe régulièrement, le bord brille un peu plus */
+.tc.us10 .usure,.tc.us9 .usure{background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.55) 47%,rgba(255,255,255,.1) 52%,transparent 60%);background-size:300% 100%;mix-blend-mode:screen;animation:usVernis 5s ease-in-out infinite}
+.tc.us9 .usure{opacity:.55;animation-duration:7s}
+.tc.us10 .f{box-shadow:inset 0 0 0 .4cqw rgba(0,0,0,.45),inset 0 0 0 .7cqw rgba(255,255,255,.55),0 0 4cqw rgba(255,255,255,.35)}
+.tc.us10 .art img{filter:saturate(1.12) contrast(1.05)}
+@keyframes usVernis{0%,55%{background-position:100% 0}85%,100%{background-position:0 0}}
+/* 8 et 7 : propre et légèrement lustré */
+.tc.us8 .usure,.tc.us7 .usure{background:linear-gradient(140deg,rgba(255,255,255,.14),transparent 35%);mix-blend-mode:screen}
+.tc.us7 .usure{opacity:.6}
+/* 4 et moins : l'usure s'accumule. .usure porte les rayures et les pliures, ::before les taches, ::after les bords blanchis */
+.tc.us4 .usure::before,.tc.us4 .usure::after,.tc.us3 .usure::before,.tc.us3 .usure::after,.tc.us2 .usure::before,.tc.us2 .usure::after,.tc.us1 .usure::before,.tc.us1 .usure::after{content:"";position:absolute;inset:0;border-radius:inherit}
+.tc .usure::after{mix-blend-mode:screen}
+.tc .usure::before{mix-blend-mode:multiply}
+/* 4 : couleurs un peu passées, bords qui commencent à blanchir */
+.tc.us4 .art img{filter:saturate(.82) brightness(.97)}
+.tc.us4 .usure::after{box-shadow:inset 0 0 0 .7cqw rgba(235,225,205,.28),inset 0 0 3cqw rgba(235,225,205,.15)}
+/* 3 : coins écrasés et rayures */
+.tc.us3 .art img{filter:saturate(.72) brightness(.95)}
+.tc.us3 .usure,.tc.us2 .usure,.tc.us1 .usure{background:
+  repeating-linear-gradient(104deg,transparent 0 12cqw,rgba(255,255,255,.28) 12cqw 12.25cqw,transparent 12.25cqw 27cqw),
+  repeating-linear-gradient(76deg,transparent 0 19cqw,rgba(255,255,255,.2) 19cqw 19.2cqw,transparent 19.2cqw 41cqw)}
+.tc.us3 .usure::after,.tc.us2 .usure::after,.tc.us1 .usure::after{box-shadow:inset 0 0 0 .9cqw rgba(240,230,210,.4),inset 0 0 4cqw rgba(240,230,210,.2);
+  background:radial-gradient(circle at 5.5cqw 5.5cqw,rgba(245,238,225,.75) 0 1.8cqw,rgba(245,238,225,.25) 3.2cqw,transparent 5cqw),radial-gradient(circle at calc(100% - 5.5cqw) 5.5cqw,rgba(245,238,225,.6) 0 1.4cqw,transparent 4cqw),
+    radial-gradient(circle at 5.5cqw calc(100% - 5.5cqw),rgba(245,238,225,.6) 0 1.4cqw,transparent 4cqw),radial-gradient(circle at calc(100% - 5.5cqw) calc(100% - 5.5cqw),rgba(245,238,225,.75) 0 1.8cqw,rgba(245,238,225,.25) 3.2cqw,transparent 5cqw)}
+/* 2 : une pliure en travers, une tache, couleurs jaunies */
+.tc.us2 .art img{filter:saturate(.58) sepia(.28) brightness(.92)}
+.tc.us2 .usure,.tc.us1 .usure{background:
+  linear-gradient(58deg,transparent 49.2%,rgba(255,255,255,.55) 49.7%,rgba(255,255,255,.12) 50.1%,rgba(0,0,0,.45) 50.4%,transparent 51.2%),
+  repeating-linear-gradient(104deg,transparent 0 10cqw,rgba(255,255,255,.3) 10cqw 10.25cqw,transparent 10.25cqw 22cqw),
+  repeating-linear-gradient(76deg,transparent 0 16cqw,rgba(255,255,255,.22) 16cqw 16.2cqw,transparent 16.2cqw 33cqw)}
+.tc.us2 .usure::before,.tc.us1 .usure::before{background:radial-gradient(17cqw 12cqw at 70% 32%,rgba(105,85,60,.85),rgba(140,118,88,.6) 40%,rgba(185,165,135,.35) 58%,rgba(205,190,165,.55) 63%,transparent 70%)}
+/* 1 : deux pliures, grosses taches, coin arraché, couleurs délavées */
+.tc.us1 .art img{filter:saturate(.4) sepia(.45) contrast(.88) brightness(.88)}
+.tc.us1 .f{clip-path:polygon(0 0,82% 0,85% 2.4%,88% 1.2%,91% 4.6%,94% 3.6%,97% 7%,100% 9%,100% 100%,0 100%)}
+.tc.us1 .usure{background:
+  linear-gradient(58deg,transparent 49.2%,rgba(255,255,255,.6) 49.7%,rgba(255,255,255,.12) 50.1%,rgba(0,0,0,.5) 50.4%,transparent 51.2%),
+  linear-gradient(-34deg,transparent 62.2%,rgba(255,255,255,.5) 62.7%,rgba(0,0,0,.45) 63.3%,transparent 64%),
+  repeating-linear-gradient(104deg,transparent 0 7cqw,rgba(255,255,255,.32) 7cqw 7.3cqw,transparent 7.3cqw 15cqw),
+  repeating-linear-gradient(76deg,transparent 0 12cqw,rgba(255,255,255,.24) 12cqw 12.2cqw,transparent 12.2cqw 25cqw)}
+.tc.us1 .usure::before{background:radial-gradient(24cqw 17cqw at 32% 64%,rgba(100,80,55,.9),rgba(135,112,82,.65) 40%,rgba(180,160,130,.38) 58%,rgba(205,190,165,.6) 64%,transparent 71%),
+  radial-gradient(12cqw 9cqw at 74% 28%,rgba(105,85,60,.8),rgba(150,128,98,.45) 50%,rgba(205,190,165,.5) 62%,transparent 70%)}
+.tc.us1 .usure::after{box-shadow:inset 0 0 0 1.2cqw rgba(240,230,210,.5),inset 0 0 5cqw rgba(240,230,210,.25)}
+@media (prefers-reduced-motion:reduce){.tc.us10 .usure,.tc.us9 .usure{animation:none}}

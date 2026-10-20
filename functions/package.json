@@ -1,0 +1,10 @@
+{
+  "name": "la-chauvalerie",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node dev/serveur.mjs",
+    "test": "node tests/scenario.mjs",
+    "charge": "node tests/charge.mjs"
+  }
+}

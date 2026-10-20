@@ -1,0 +1,19 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "chauvalerie": {
+      "public": {
+        ".read": true,
+        "encheres": { ".indexOn": ["fini"] }
+      },
+      "joueurs":  { ".read": true, ".indexOn": ["score", "login"] },
+      "copies":   { ".read": true, ".indexOn": ["proprio", "id"] },
+      "echanges": { ".read": true, ".indexOn": ["de", "a", "statut"] },
+      "notifs":   { ".read": true },
+      "overlay":  { ".read": true },
+      "images":   { ".read": false },
+      "etats":    { ".read": false }
+    }
+  }
+}

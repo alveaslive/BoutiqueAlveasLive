@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>La Chauverie — overlay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tilt+Neon&family=Albert+Sans:wght@600;800&family=Martian+Mono:wght@600&display=swap">
+<link rel="stylesheet" href="/carte.css">
+<style>
+  /* Source navigateur OBS : 1920 × 1080, fond transparent.
+     Les sorties de booster annoncées se règlent dans l'Atelier (onglet Stream).
+     Paramètres d'URL : ?min=rare (force la rareté minimale annoncée, à la place du réglage de l'Atelier)
+                        &mise=300 (affiche les mises à partir de ce montant, 0 pour aucune)
+                        &bandeau=1 (bandeau des enchères en cours en bas)
+                        &test=1 (joue des exemples pour régler la scène) */
+  :root{ --orange:#ff7b1c; --rose:#ff4f8b; --violet:#b64dff; --txt:#f4eef8; --mut:#b8a9c9; --neon:linear-gradient(90deg,#ff7b1c,#ff4f8b 50%,#b64dff);
+    --display:"Tilt Neon","Trebuchet MS",sans-serif; --body:"Albert Sans","Segoe UI",sans-serif; --mono:"Martian Mono",monospace; }
+  [hidden]{display:none!important}
+  html,body{margin:0;height:100%;background:transparent;overflow:hidden;color:var(--txt);font-family:var(--body)}
+  .scene{position:fixed;inset:0}
+  /* grande annonce : pack rare ou adjugé */
+  .annonce{--rc:#c9bfd8;position:absolute;right:60px;top:50%;display:grid;grid-template-columns:290px auto;gap:28px;align-items:center;padding:24px 34px 24px 24px;border-radius:26px;
+    background:rgba(12,8,18,.9);border:2px solid var(--rc);box-shadow:0 0 0 1px rgba(255,255,255,.08),0 0 60px color-mix(in srgb,var(--rc) 60%,transparent),0 20px 60px rgba(0,0,0,.6);
+    transform:translate(120%,-50%);transition:transform .7s cubic-bezier(.2,1.2,.3,1)}
+  .annonce.la{transform:translate(0,-50%)}
+  .annonce.part{transform:translate(0,-50%) scale(.9);opacity:0;transition:.5s}
+  .annonce .vis{width:290px}
+  .annonce .txt .qui{font-size:30px;font-weight:800}
+  .annonce .txt .quoi{font-size:22px;color:var(--mut);margin-top:4px}
+  .annonce .txt .nom{font-family:var(--display);font-size:78px;line-height:1;margin:14px 0 10px;color:#fff;text-shadow:0 0 12px var(--rc),0 0 36px var(--rc)}
+  .annonce .txt .rar{display:inline-block;padding:4px 16px;border-radius:999px;font-weight:800;font-size:22px;color:#12091a;background:var(--rc);box-shadow:0 0 18px var(--rc)}
+  .annonce .txt .no{font:600 24px var(--mono);margin-left:12px;color:var(--mut)}
+  .annonce .txt .prix{font:600 40px var(--mono);margin-top:16px;background:var(--neon);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .eclair{position:absolute;inset:0;pointer-events:none;background:radial-gradient(60% 60% at 80% 50%,color-mix(in srgb,var(--rc,#fff) 45%,transparent),transparent 70%);opacity:0}
+  .eclair.go{animation:eclair 1.2s ease-out}
+  @keyframes eclair{15%{opacity:1}100%{opacity:0}}
+  /* grosses sorties : bandeau titre, rayons, flash, secousse, particules */
+  .titre-sortie{position:absolute;z-index:2;right:80px;top:calc(50% - 380px);font-family:var(--display);font-size:64px;letter-spacing:.04em;color:#fff;white-space:nowrap;
+    text-shadow:0 0 14px var(--rc),0 0 40px var(--rc),0 0 80px var(--rc);opacity:0;transform:scale(.4) rotate(-6deg)}
+  .titre-sortie.go{animation:titre 1s cubic-bezier(.2,1.6,.3,1) forwards}
+  .titre-sortie.part{transition:.5s;opacity:0!important}
+  @keyframes titre{to{opacity:1;transform:scale(1) rotate(-3deg)}}
+  .rayons{position:absolute;right:-140px;top:50%;width:900px;height:900px;margin-top:-450px;border-radius:50%;opacity:0;pointer-events:none;
+    background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--rc) 55%,transparent) 0 6deg,transparent 6deg 18deg);
+    -webkit-mask:radial-gradient(closest-side,#000 20%,transparent 100%);mask:radial-gradient(closest-side,#000 20%,transparent 100%)}
+  .rayons.go{animation:rayons 9s linear forwards}
+  @keyframes rayons{0%{opacity:0;transform:rotate(0) scale(.6)}10%{opacity:.9;transform:rotate(20deg) scale(1)}85%{opacity:.8}100%{opacity:0;transform:rotate(160deg) scale(1.1)}}
+  .flash{position:absolute;inset:0;background:var(--rc,#fff);opacity:0;pointer-events:none;mix-blend-mode:screen}
+  .flash.go{animation:flash .9s ease-out}
+  @keyframes flash{8%{opacity:.75}100%{opacity:0}}
+  .scene.secousse{animation:secousse .6s}
+  @keyframes secousse{10%,50%,90%{transform:translate(-14px,6px)}30%,70%{transform:translate(14px,-6px)}}
+  #fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .annonce.n3,.annonce.n4{grid-template-columns:340px auto}
+  .annonce.n3 .vis,.annonce.n4 .vis{width:340px}
+  .annonce.n4{background:radial-gradient(80% 120% at 30% 50%,rgba(255,207,63,.25),transparent 70%),rgba(18,12,4,.92)}
+  .annonce.n2 .vis,.annonce.n3 .vis,.annonce.n4 .vis{animation:flotte 3s ease-in-out infinite}
+  @keyframes flotte{50%{transform:translateY(-10px) rotate(-1deg)}}
+  @media (prefers-reduced-motion:reduce){.rayons.go,.scene.secousse,.titre-sortie.go,.vis{animation:none!important}.titre-sortie.go{opacity:1;transform:none}}
+  /* petites mises */
+  .mises{position:absolute;right:60px;top:60px;display:grid;gap:12px;justify-items:end}
+  .mise{display:flex;align-items:center;gap:14px;padding:12px 20px 12px 12px;border-radius:18px;background:rgba(12,8,18,.88);border:1.5px solid var(--orange);box-shadow:0 0 24px rgba(255,123,28,.4);font-size:22px;animation:entre .4s ease-out}
+  .mise img{width:48px;aspect-ratio:600/1066;object-fit:cover;border-radius:8px}
+  .mise b{font-family:var(--mono)}
+  @keyframes entre{from{transform:translateX(60px);opacity:0}}
+  /* bandeau des enchères */
+  .bandeau{position:absolute;left:0;right:0;bottom:0;height:64px;display:flex;align-items:center;gap:0;background:linear-gradient(90deg,rgba(12,8,18,.95),rgba(12,8,18,.85));border-top:2px solid transparent;border-image:var(--neon) 1;overflow:hidden}
+  .bandeau .tag{flex:none;height:100%;display:grid;place-items:center;padding:0 22px;font-family:var(--display);font-size:26px;color:#1a0b12;background:var(--neon)}
+  .bandeau .piste{display:flex;gap:46px;white-space:nowrap;padding-left:30px;animation:defile linear infinite}
+  .bandeau .item{display:inline-flex;align-items:center;gap:12px;font-size:22px;font-weight:800}
+  .bandeau .item span{font:600 20px var(--mono);color:var(--mut)}
+  .bandeau .item em{font-style:normal;color:#ffb070}
+  @keyframes defile{to{transform:translateX(-50%)}}
+</style>
+</head>
+<body>
+<div class="scene" id="scene">
+  <div class="rayons" id="rayons"></div>
+  <div class="eclair" id="eclair"></div>
+  <div class="flash" id="flash"></div>
+  <canvas id="fx"></canvas>
+  <div class="titre-sortie" id="titre"></div>
+  <div class="mises" id="mises"></div>
+  <div class="annonce" id="annonce"></div>
+  <div class="bandeau" id="bandeau" hidden><span class="tag">Enchères</span><div class="piste" id="piste"></div></div>
+</div>
+<script type="module">
+import { RARETES, ORDRE_R, alertesDe } from './js/regles.js';
+import { configurer, ecouter } from './js/temps-reel.js';
+import { carteHTML } from './js/carte.js';
+
+const P = new URLSearchParams(location.search), $ = s => document.querySelector(s);
+const SEUIL_MISE = +(P.get('mise') ?? 300);
+let ALERTES = alertesDe(null);           /* remplacé en direct par les réglages de l'Atelier */
+if (P.get('min')) ALERTES = { ...ALERTES, min: P.get('min'), force: true };
+const rang = r => ORDRE_R.indexOf(r);
+const aAnnoncer = ev => ev.rarete === 'or' || (ALERTES.min !== 'aucun' && rang(ev.rarete) >= rang(ALERTES.min)) || (ev.chrome && ALERTES.chrome !== 'aucun' && rang(ev.rarete) >= rang(ALERTES.chrome));
+/* niveau de spectacle : 1 simple, 2 légendaire, 3 unique, 4 Crâne d'or */
+const niveau = ev => ev.type !== 'pack' ? 1 : ev.rarete === 'or' ? 4 : ev.rarete === 'unique' ? 3 : ev.rarete === 'legendaire' ? 2 : ev.chrome && rang(ev.rarete) >= rang('epique') ? 2 : 1;
+const TITRES = { 4: 'CRÂNE D\'OR !!!', 3: 'UNIQUE !!', 2: 'LÉGENDAIRE !' };
+
+/* particules : gerbe depuis la carte, pluie pour les plus rares */
+const cv = $('#fx'), cx = cv.getContext('2d'); let parts = [], anim = 0;
+function taille(){ cv.width = innerWidth; cv.height = innerHeight; } taille(); addEventListener('resize', taille);
+function gerbe(x, y, n, couls, force = 14){ for (let i = 0; i < n; i++){ const a = Math.random() * Math.PI * 2, v = force * (.3 + Math.random()); parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4, g: .25, vie: 90 + Math.random() * 60, t: 0, r: 2 + Math.random() * 4, c: couls[i % couls.length] }); } boucle(); }
+function pluie(n, couls){ for (let i = 0; i < n; i++) parts.push({ x: Math.random() * cv.width, y: -20 - Math.random() * cv.height, vx: (Math.random() - .5) * 2, vy: 3 + Math.random() * 4, g: .03, vie: 400, t: 0, r: 3 + Math.random() * 5, c: couls[i % couls.length], rot: Math.random() * 6, carre: true }); boucle(); }
+function boucle(){ if (anim) return; const pas = () => { cx.clearRect(0, 0, cv.width, cv.height);
+    parts = parts.filter(p => (p.t++ < p.vie) && p.y < cv.height + 30);
+    for (const p of parts){ p.vy += p.g; p.x += p.vx; p.y += p.vy; p.vx *= .99; const al = Math.min(1, (p.vie - p.t) / 30);
+      cx.globalAlpha = al; cx.fillStyle = p.c; cx.shadowColor = p.c; cx.shadowBlur = 12;
+      if (p.carre){ p.rot += .1; cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot); cx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); cx.restore(); } else { cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 7); cx.fill(); } }
+    cx.globalAlpha = 1; anim = parts.length ? requestAnimationFrame(pas) : 0; if (!parts.length) cx.clearRect(0, 0, cv.width, cv.height); };
+  anim = requestAnimationFrame(pas); }
+const relancer = (el, c = 'go') => { el.classList.remove(c); void el.offsetWidth; el.classList.add(c); };
+const esc = t => String(t ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+const fmt = n => Math.floor(n).toLocaleString('fr-FR');
+const file = [], vus = new Set(), DEBUT = Date.now();
+let occupe = false;
+
+function annoncer(ev){
+  const a = $('#annonce'), coul = RARETES[ev.rarete]?.couleur || '#c9bfd8', n = niveau(ev);
+  for (const el of [a, $('#eclair'), $('#rayons'), $('#flash'), $('#titre')]) el.style.setProperty('--rc', coul);
+  a.innerHTML = `<div class="vis">${carteHTML({ img: ev.img, nom: ev.nom, rarete: ev.rarete, cadre: ev.cadre, couleur: ev.couleur, sans: ev.sans, coll: ev.coll, droite: '', chrome: ev.chrome })}</div>
+    <div class="txt"><div class="qui">${esc(ev.qui)}</div><div class="quoi">${ev.type === 'adjuge' ? 'remporte aux enchères' : ev.type === 'pca' ? `obtient un PCA 10${ev.black ? ' Étiquette noire' : ''} sur` : 'vient d\'obtenir'}</div>
+      <div class="nom">${esc(ev.nom)}</div><span class="rar">${RARETES[ev.rarete]?.nom || ''}${ev.chrome ? ' · Chromé' : ''}</span>
+      ${ev.type === 'adjuge' ? `<div class="prix">${fmt(ev.montant)} cheveux</div>` : ''}</div>`;
+  a.className = `annonce n${n}`; void a.offsetWidth; a.classList.add('la');
+  relancer($('#eclair'));
+  const titre = $('#titre'); titre.className = 'titre-sortie'; titre.textContent = TITRES[n] || (ev.chrome && ev.type === 'pack' ? 'CHROMÉ !' : '');
+  if (titre.textContent) setTimeout(() => relancer(titre), 350);
+  const duree = { 1: 6500, 2: 8000, 3: 9500, 4: 11000 }[n];
+  if (n >= 2){
+    relancer($('#rayons'));
+    const couls = n === 4 ? ['#fff6c9', '#ffd447', '#ffb000', '#fff'] : n === 3 ? ['#ff4f8b', '#ff9ccf', '#fff', '#b64dff'] : [coul, '#fff', '#ffd2a6'];
+    setTimeout(() => { const b = a.querySelector('.vis').getBoundingClientRect(); gerbe(b.left + b.width / 2, b.top + b.height / 2, n === 2 ? 120 : 220, couls, n === 2 ? 13 : 18); }, 700);
+    if (n >= 3){ setTimeout(() => { relancer($('#flash')); relancer($('#scene'), 'secousse'); }, 650); setTimeout(() => pluie(n === 4 ? 260 : 160, couls), 900); }
+  }
+  return new Promise(r => setTimeout(() => { a.classList.add('part'); titre.classList.add('part'); setTimeout(r, 600); }, duree));
+}
+async function jouer(){
+  if (occupe) return; occupe = true;
+  while (file.length) await annoncer(file.shift());
+  occupe = false;
+}
+function mise(ev){
+  const d = document.createElement('div'); d.className = 'mise';
+  d.innerHTML = `<img src="${esc(ev.img)}" alt=""><span><strong>${esc(ev.qui)}</strong> mise <b>${fmt(ev.montant)}</b> sur ${esc(ev.nom)}</span>`;
+  $('#mises').prepend(d); setTimeout(() => d.remove(), 6000);
+  while ($('#mises').children.length > 4) $('#mises').lastChild.remove();
+}
+/* ?cle=… : l'overlay relève le chat pour créditer les cheveux de présence (le serveur limite à un relevé toutes les quelques minutes) */
+const CLE = P.get('cle');
+if (CLE){ const relever = () => fetch('/api/presence', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ cle: CLE }) }).catch(() => {}); relever(); setInterval(relever, 60e3); }
+function recevoir(ev){
+  if (ev.type === 'pack' && aAnnoncer(ev)){ file.push(ev); jouer(); }
+  else if (ev.type === 'adjuge' || ev.type === 'pca'){ file.push(ev); jouer(); }
+  else if (ev.type === 'mise' && SEUIL_MISE > 0 && ev.montant >= SEUIL_MISE) mise(ev);
+}
+
+/* bandeau : enchères en cours, rafraîchi en direct */
+let CAT = {};
+function bandeau(ench){
+  const ouvertes = Object.values(ench || {}).filter(e => !e.fini && e.fin > Date.now()).sort((a, b) => a.fin - b.fin).slice(0, 12);
+  $('#bandeau').hidden = !ouvertes.length;
+  const item = e => { const c = CAT[e.id] || { nom: e.id }, m = Math.max(0, Math.round((e.fin - Date.now()) / 60000)); return `<span class="item">${esc(c.nom)} <em>${fmt(e.offre || e.depart)}</em> <span>${m < 1 ? '< 1 min' : m < 60 ? m + ' min' : Math.round(m / 60) + ' h'}</span></span>`; };
+  const html = ouvertes.map(item).join('');
+  const piste = $('#piste'); piste.innerHTML = html + html; piste.style.animationDuration = `${Math.max(20, ouvertes.length * 7)}s`;
+}
+
+(async () => {
+  if (P.get('test')){
+    const img = './img/barbald.webp';
+    const t = P.get('test');
+    if (t === 'or' || t === 'unique' || t === 'legendaire') recevoir({ type: 'pack', qui: 'LissBoy', nom: 'Barbald', rarete: t, chrome: false, img });
+    else { recevoir({ type: 'pack', qui: 'LissBoy', nom: 'Barbald', rarete: 'legendaire', no: 3, tirage: 10, chrome: true, img });
+    recevoir({ type: 'pack', qui: 'CrâneLisse', nom: 'Crânisse', rarete: 'unique', chrome: false, img: './img/cranisse.webp' });
+    recevoir({ type: 'pack', qui: 'Mme_Rasoir', nom: 'Le Crâne d\'or', rarete: 'or', chrome: false, img: './img/cranombre.webp' }); }
+    if (t === '1') recevoir({ type: 'adjuge', qui: 'Mme_Rasoir', nom: 'Bladwall', rarete: 'rare', no: 7, tirage: 150, img: './img/bladwall.webp', montant: 540 });
+    setInterval(() => mise({ qui: 'ZeroCheveux', nom: 'Crânisse', no: 42, montant: 300 + Math.round(Math.random() * 400), img: './img/cranisse.webp' }), 3000);
+  }
+  await configurer();
+  /* 2 flux au maximum (connexions Firebase limitées) : les alertes, et les réglages, lus dans le flux du bandeau s'il est affiché */
+  if (!ALERTES.force && !P.get('bandeau')) ecouter('public/catalogue/reglages', {}, d => { ALERTES = alertesDe(d); });
+  ecouter('overlay', { orderBy: '$key', limitToLast: 10 }, d => {
+    for (const [k, ev] of Object.entries(d)){ if (vus.has(k)) continue; vus.add(k); if (ev.t > DEBUT - 3000) recevoir(ev); }
+  });
+  if (P.get('bandeau')){
+    let dern = {};
+    ecouter('public', {}, d => { CAT = d.catalogue?.chauves || {}; dern = d.encheres || {}; bandeau(dern); if (!ALERTES.force) ALERTES = alertesDe(d.catalogue?.reglages); });
+    setInterval(() => bandeau(dern), 30000);
+  }
+})();
+</script>
+</body>
+</html>
