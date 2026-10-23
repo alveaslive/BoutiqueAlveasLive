@@ -21,8 +21,13 @@ export async function onRequest(context) {
   const item = String(body.item || "").toLowerCase();
   let qty = parseInt(body.qty, 10); if (!Number.isFinite(qty) || qty < 1) qty = 1; qty = Math.min(qty, 99);
 
-  const allowed = ["superball", "hyperball", "masterball", "superbonbon"];
+  const allowed = ["superball", "hyperball", "masterball", "superbonbon",
+    // Event Halloween 🎃 : articles payés en bonbons (le bot vérifie que l'event est actif)
+    "hw_legendaire", "hw_oeuf", "hw_titre", "hw_cadre", "hw_bordure", "hw_fondnuit", "hw_badge",
+    // afficher / masquer une déco possédée (gratuit)
+    "hwt_cadre", "hwt_bordure", "hwt_fondnuit", "hwt_badge"];
   if (!allowed.includes(item)) return json({ ok: false, error: "Objet inconnu" }, 400);
+  if (item.startsWith("hw")) qty = 1;   // articles et réglages d'event : un seul à la fois
 
   // 3) Déposer la demande dans Firebase, sous un identifiant unique.
   const channel = env.CHANNEL || "alveaslive";
@@ -50,7 +55,7 @@ export async function onRequest(context) {
       if (data) {
         // nettoyer le résultat pour ne pas encombrer la base
         fetch(resPath, { method: "DELETE" }).catch(() => {});
-        return json({ ok: !!data.ok, message: data.message || "", coins: data.coins });
+        return json({ ok: !!data.ok, message: data.message || "", coins: data.coins, candy: data.candy, decoOff: data.decoOff });
       }
     }
   }
