@@ -2,8 +2,9 @@
 // (via le cookie de session posé à la connexion), puis dépose la demande dans
 // Firebase pour que le BOT la traite (le bot est la source de vérité des pièces).
 // Accessible via  POST .../buy
-// les 8 badges Pokémon d'Halloween (vendus à l'unité)
-const HW_BADGES = ["b_pikachu", "b_evoli", "b_ecto", "b_salameche", "b_carapuce", "b_bulbi", "b_noctali", "b_miaouss"];
+// les 21 badges Pokémon d'Halloween (vendus à l'unité)
+const HW_BADGES = ["b_pikachu", "b_evoli", "b_ecto", "b_salameche", "b_carapuce", "b_bulbi", "b_noctali", "b_miaouss", "b_goupix",
+  "b_colossinge", "b_psykokwak", "b_caninos", "b_lokhlass", "b_togepi", "b_marill", "b_hoothoot", "b_germignon", "b_hericendre", "b_kaiminus", "b_scarhino", "b_teddiursa"];
 
 export async function onRequest(context) {
   const { request, env } = context;
