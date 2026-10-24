@@ -2,6 +2,9 @@
 // (via le cookie de session posé à la connexion), puis dépose la demande dans
 // Firebase pour que le BOT la traite (le bot est la source de vérité des pièces).
 // Accessible via  POST .../buy
+// les 8 badges Pokémon d'Halloween (vendus à l'unité)
+const HW_BADGES = ["b_pikachu", "b_evoli", "b_ecto", "b_salameche", "b_carapuce", "b_bulbi", "b_noctali", "b_miaouss"];
+
 export async function onRequest(context) {
   const { request, env } = context;
 
@@ -23,9 +26,10 @@ export async function onRequest(context) {
 
   const allowed = ["superball", "hyperball", "masterball", "superbonbon",
     // Event Halloween 🎃 : articles payés en bonbons (le bot vérifie que l'event est actif)
-    "hw_legendaire", "hw_oeuf", "hw_titre", "hw_cadre", "hw_bordure", "hw_fondnuit", "hw_badge",
+    "hw_legendaire", "hw_oeuf", "hw_titre", "hw_cadre", "hw_bordure", "hw_fondnuit",
+    ...HW_BADGES.map(b => "hw_" + b),
     // afficher / masquer une déco possédée (gratuit)
-    "hwt_cadre", "hwt_bordure", "hwt_fondnuit", "hwt_badge"];
+    "hwt_cadre", "hwt_bordure", "hwt_fondnuit", ...HW_BADGES.map(b => "hwt_" + b)];
   if (!allowed.includes(item)) return json({ ok: false, error: "Objet inconnu" }, 400);
   if (item.startsWith("hw")) qty = 1;   // articles et réglages d'event : un seul à la fois
 
