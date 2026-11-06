@@ -3,6 +3,8 @@
 // Firebase pour que le BOT la traite (le bot est la source de vérité des pièces).
 // Accessible via  POST .../buy
 // les 21 badges Pokémon d'Halloween (vendus à l'unité)
+const CASINO_BADGES = ["c_miaouss", "c_rondoudou", "c_laggron", "c_gardevoir", "c_tenefix", "c_libegon", "c_metalosse", "c_milobellus",
+  "c_brasegali", "c_absol", "c_machine", "c_roulette", "c_jetons", "c_des", "c_mainroyale"];
 const HW_BADGES = ["b_pikachu", "b_evoli", "b_ecto", "b_salameche", "b_carapuce", "b_bulbi", "b_noctali", "b_miaouss", "b_goupix",
   "b_colossinge", "b_psykokwak", "b_caninos", "b_lokhlass", "b_togepi", "b_marill", "b_hoothoot", "b_germignon", "b_hericendre", "b_kaiminus", "b_scarhino", "b_teddiursa"];
 
@@ -30,7 +32,9 @@ export async function onRequest(context) {
     "hw_legendaire", "hw_oeuf", "hw_titre", "hw_cadre", "hw_bordure", "hw_fondnuit",
     ...HW_BADGES.map(b => "hw_" + b),
     // afficher / masquer une déco possédée (gratuit)
-    "hwt_cadre", "hwt_bordure", "hwt_fondnuit", "hwt_casino", ...HW_BADGES.map(b => "hwt_" + b)];
+    "hwt_cadre", "hwt_bordure", "hwt_fondnuit", "hwt_casino", ...HW_BADGES.map(b => "hwt_" + b),
+    // badges gagnés au casino : affichage seulement (ils s'obtiennent avec des jetons, via /casino)
+    ...CASINO_BADGES.map(b => "hwt_" + b)];
   if (!allowed.includes(item)) return json({ ok: false, error: "Objet inconnu" }, 400);
   if (item.startsWith("hw")) qty = 1;   // articles et réglages d'event : un seul à la fois
 
