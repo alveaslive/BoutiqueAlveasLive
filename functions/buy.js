@@ -30,7 +30,7 @@ export async function onRequest(context) {
     "hw_legendaire", "hw_oeuf", "hw_titre", "hw_cadre", "hw_bordure", "hw_fondnuit",
     ...HW_BADGES.map(b => "hw_" + b),
     // afficher / masquer une déco possédée (gratuit)
-    "hwt_cadre", "hwt_bordure", "hwt_fondnuit", ...HW_BADGES.map(b => "hwt_" + b)];
+    "hwt_cadre", "hwt_bordure", "hwt_fondnuit", "hwt_casino", ...HW_BADGES.map(b => "hwt_" + b)];
   if (!allowed.includes(item)) return json({ ok: false, error: "Objet inconnu" }, 400);
   if (item.startsWith("hw")) qty = 1;   // articles et réglages d'event : un seul à la fois
 
