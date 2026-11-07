@@ -4,7 +4,7 @@
 // Accessible via  POST .../buy
 // les 21 badges Pokémon d'Halloween (vendus à l'unité)
 const CASINO_BADGES = ["c_miaouss", "c_rondoudou", "c_laggron", "c_gardevoir", "c_tenefix", "c_libegon", "c_metalosse", "c_milobellus",
-  "c_brasegali", "c_absol", "c_machine", "c_roulette", "c_jetons", "c_des", "c_mainroyale"];
+  "c_brasegali", "c_absol", "c_noctali", "c_rayquaza", "c_machine", "c_roulette", "c_jetons", "c_des", "c_mainroyale"];
 const HW_BADGES = ["b_pikachu", "b_evoli", "b_ecto", "b_salameche", "b_carapuce", "b_bulbi", "b_noctali", "b_miaouss", "b_goupix",
   "b_colossinge", "b_psykokwak", "b_caninos", "b_lokhlass", "b_togepi", "b_marill", "b_hoothoot", "b_germignon", "b_hericendre", "b_kaiminus", "b_scarhino", "b_teddiursa"];
 
