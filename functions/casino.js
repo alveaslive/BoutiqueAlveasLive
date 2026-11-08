@@ -3,7 +3,7 @@
 // viewer (cookie de session signé), puis on dépose la demande dans Firebase pour que le BOT
 // l'exécute : c'est lui la source de vérité. Le résultat est renvoyé tel que le bot l'a écrit.
 // Accessible via  POST .../casino
-const ACTIONS = ["exchange", "buyback", "spin", "prize", "stone", "lock"];
+const ACTIONS = ["exchange", "buyback", "spin", "prize", "stone", "meteorite", "lock"];
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -27,6 +27,7 @@ export async function onRequest(context) {
   if (action === "buyback") data.id = String(d.id || "").slice(0, 40);
   if (action === "prize")   data.key = String(d.key || "").slice(0, 30);
   if (action === "stone")   { data.uid = String(d.uid || "").slice(0, 40); data.stone = String(d.stone || "").slice(0, 12); }
+  if (action === "meteorite") { data.uid = String(d.uid || "").slice(0, 40); data.forme = String(d.forme || "").slice(0, 12); }
   if (action === "lock")    { data.uid = String(d.uid || "").slice(0, 40); data.on = !!d.on; }
 
   const channel = env.CHANNEL || "alveaslive";
