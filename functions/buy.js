@@ -5,6 +5,8 @@
 // les 21 badges Pokémon d'Halloween (vendus à l'unité)
 const CASINO_BADGES = ["c_miaouss", "c_rondoudou", "c_laggron", "c_gardevoir", "c_tenefix", "c_libegon", "c_metalosse", "c_milobellus",
   "c_brasegali", "c_absol", "c_noctali", "c_rayquaza", "c_machine", "c_roulette", "c_jetons", "c_des", "c_mainroyale"];
+const COLOR_FONDS = ["cf_rouge", "cf_orange", "cf_or", "cf_vert", "cf_emeraude", "cf_turquoise", "cf_ciel", "cf_bleu", "cf_nuit", "cf_violet", "cf_lavande", "cf_rose", "cf_framboise", "cf_chocolat", "cf_charbon", "cf_argent"];   // fonds de carte de couleur (payés en pièces)
+const PREMIUM_FONDS = ["pm_soleil", "pm_galaxie", "pm_aurore", "pm_holo"];   // fonds premium animés (payés en pièces)
 const VICE_BADGES = ["g_miaouss", "g_noctali", "g_dracaufeu", "g_rayquaza", "g_ectoplasma", "g_pikachu", "g_vicecity", "g_butin"];
 const HW_BADGES = ["b_pikachu", "b_evoli", "b_ecto", "b_salameche", "b_carapuce", "b_bulbi", "b_noctali", "b_miaouss", "b_goupix",
   "b_colossinge", "b_psykokwak", "b_caninos", "b_lokhlass", "b_togepi", "b_marill", "b_hoothoot", "b_germignon", "b_hericendre", "b_kaiminus", "b_scarhino", "b_teddiursa"];
@@ -28,7 +30,7 @@ export async function onRequest(context) {
   const item = String(body.item || "").toLowerCase();
   let qty = parseInt(body.qty, 10); if (!Number.isFinite(qty) || qty < 1) qty = 1; qty = Math.min(qty, 99);
 
-  const allowed = ["superball", "hyperball", "masterball", "superbonbon",
+  const allowed = ["superball", "hyperball", "masterball", "superbonbon", ...COLOR_FONDS, ...COLOR_FONDS.map(c => "hwt_" + c), ...PREMIUM_FONDS, ...PREMIUM_FONDS.map(c => "hwt_" + c),
     // Event Halloween 🎃 : articles payés en bonbons (le bot vérifie que l'event est actif)
     "hw_legendaire", "hw_oeuf", "hw_titre", "hw_cadre", "hw_bordure", "hw_fondnuit",
     ...HW_BADGES.map(b => "hw_" + b),
@@ -39,7 +41,7 @@ export async function onRequest(context) {
     // badges de l'event Vice City (offerts aux gagnants) : affichage seulement
     ...VICE_BADGES.map(b => "hwt_" + b)];
   if (!allowed.includes(item)) return json({ ok: false, error: "Objet inconnu" }, 400);
-  if (item.startsWith("hw")) qty = 1;   // articles et réglages d'event : un seul à la fois
+  if (item.startsWith("hw") || item.startsWith("cf_") || item.startsWith("pm_")) qty = 1;   // articles et réglages d'event : un seul à la fois
 
   // 3) Déposer la demande dans Firebase, sous un identifiant unique.
   const channel = env.CHANNEL || "alveaslive";
